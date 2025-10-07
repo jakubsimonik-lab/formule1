@@ -1,0 +1,717 @@
+ <!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏎️ Formula 1 - Sezóna 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #e94560 0%, #c72c41 100%);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(233, 69, 96, 0.3);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: #e94560;
+            border-color: #e94560;
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .standings-table {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(233, 69, 96, 0.8);
+            padding: 20px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .position {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #e94560;
+            width: 60px;
+        }
+
+        .driver-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .driver-flag {
+            font-size: 2em;
+        }
+
+        .driver-name {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .team {
+            color: #aaa;
+            font-size: 0.95em;
+        }
+
+        .points {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .race-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .race-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+            border-color: #e94560;
+        }
+
+        .race-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #e94560;
+            opacity: 0.3;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+        }
+
+        .race-card-header {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .race-flag {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .race-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .race-circuit {
+            color: #aaa;
+            font-size: 0.95em;
+        }
+
+        .race-date {
+            font-size: 1.1em;
+            color: #ffd700;
+            margin-top: 10px;
+        }
+
+        .race-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .status-upcoming {
+            background: rgba(52, 152, 219, 0.3);
+            border: 1px solid #3498db;
+        }
+
+        .status-completed {
+            background: rgba(46, 204, 113, 0.3);
+            border: 1px solid #2ecc71;
+        }
+
+        .results-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .results-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        select, input {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        select option {
+            background: #16213e;
+            color: white;
+        }
+
+        .position-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .position-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .position-label {
+            min-width: 40px;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #e94560 0%, #c72c41 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.5);
+        }
+
+        .podium {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            margin: 40px 0;
+            padding: 40px;
+        }
+
+        .podium-place {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .podium-place:hover {
+            transform: scale(1.05);
+        }
+
+        .place-1 {
+            order: 2;
+            min-height: 250px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.05) 100%);
+            border: 2px solid gold;
+        }
+
+        .place-2 {
+            order: 1;
+            min-height: 200px;
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.2) 0%, rgba(192, 192, 192, 0.05) 100%);
+            border: 2px solid silver;
+        }
+
+        .place-3 {
+            order: 3;
+            min-height: 170px;
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.2) 0%, rgba(205, 127, 50, 0.05) 100%);
+            border: 2px solid #cd7f32;
+        }
+
+        .place-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .place-driver {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .place-points {
+            font-size: 1.5em;
+            color: #ffd700;
+        }
+
+        .reset-btn {
+            background: rgba(231, 76, 60, 0.8);
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            background: rgba(231, 76, 60, 1);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .podium {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .podium-place {
+                width: 100%;
+                min-height: auto !important;
+                max-width: 100%;
+            }
+
+            .place-1, .place-2, .place-3 {
+                order: initial;
+            }
+
+            .position-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏎️ FORMULA 1</h1>
+            <p class="tagline">Sezóna 2025 - Mistrovství světa</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('standings')">🏆 Pořadí jezdců</button>
+            <button class="tab-btn" onclick="showTab('calendar')">📅 Kalendář</button>
+            <button class="tab-btn" onclick="showTab('results')">🏁 Zadat výsledky</button>
+        </div>
+
+        <div id="standings" class="tab-content active">
+            <div class="podium" id="podium"></div>
+            <div class="standings-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pozice</th>
+                            <th>Jezdec</th>
+                            <th>Tým</th>
+                            <th>Body</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="calendar" class="tab-content">
+            <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+
+        <div id="results" class="tab-content">
+            <div class="results-section">
+                <h2 style="margin-bottom: 20px;">Zadat výsledky závodu</h2>
+                <div class="results-form">
+                    <select id="race-select">
+                        <option value="">Vyberte závod...</option>
+                    </select>
+                    <div class="position-inputs" id="position-inputs"></div>
+                    <button onclick="submitResults()">💾 Uložit výsledky</button>
+                    <button class="reset-btn" onclick="resetAllData()">🔄 Resetovat všechna data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pointsSystem = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+
+        const drivers = [
+            { id: 1, name: "Max Verstappen", flag: "🇳🇱", team: "Red Bull Racing", points: 0 },
+            { id: 2, name: "Lewis Hamilton", flag: "🇬🇧", team: "Ferrari", points: 0 },
+            { id: 3, name: "Charles Leclerc", flag: "🇲🇨", team: "Ferrari", points: 0 },
+            { id: 4, name: "Lando Norris", flag: "🇬🇧", team: "McLaren", points: 0 },
+            { id: 5, name: "Oscar Piastri", flag: "🇦🇺", team: "McLaren", points: 0 },
+            { id: 6, name: "George Russell", flag: "🇬🇧", team: "Mercedes", points: 0 },
+            { id: 7, name: "Carlos Sainz", flag: "🇪🇸", team: "Williams", points: 0 },
+            { id: 8, name: "Fernando Alonso", flag: "🇪🇸", team: "Aston Martin", points: 0 },
+            { id: 9, name: "Lance Stroll", flag: "🇨🇦", team: "Aston Martin", points: 0 },
+            { id: 10, name: "Pierre Gasly", flag: "🇫🇷", team: "Alpine", points: 0 },
+            { id: 11, name: "Esteban Ocon", flag: "🇫🇷", team: "Haas", points: 0 },
+            { id: 12, name: "Yuki Tsunoda", flag: "🇯🇵", team: "Racing Bulls", points: 0 },
+            { id: 13, name: "Alex Albon", flag: "🇹🇭", team: "Williams", points: 0 },
+            { id: 14, name: "Nico Hulkenberg", flag: "🇩🇪", team: "Sauber", points: 0 },
+            { id: 15, name: "Valtteri Bottas", flag: "🇫🇮", team: "Sauber", points: 0 },
+            { id: 16, name: "Oliver Bearman", flag: "🇬🇧", team: "Haas", points: 0 },
+            { id: 17, name: "Jack Doohan", flag: "🇦🇺", team: "Alpine", points: 0 },
+            { id: 18, name: "Isack Hadjar", flag: "🇫🇷", team: "Racing Bulls", points: 0 },
+            { id: 19, name: "Andrea Kimi Antonelli", flag: "🇮🇹", team: "Mercedes", points: 0 },
+            { id: 20, name: "Gabriel Bortoleto", flag: "🇧🇷", team: "Sauber", points: 0 }
+        ];
+
+        const races = [
+            { id: 1, name: "Velká cena Austrálie", circuit: "Albert Park", date: "16. března 2025", flag: "🇦🇺", completed: false },
+            { id: 2, name: "Velká cena Číny", circuit: "Shanghai", date: "23. března 2025", flag: "🇨🇳", completed: false },
+            { id: 3, name: "Velká cena Japonska", circuit: "Suzuka", date: "6. dubna 2025", flag: "🇯🇵", completed: false },
+            { id: 4, name: "Velká cena Bahrajnu", circuit: "Sakhir", date: "13. dubna 2025", flag: "🇧🇭", completed: false },
+            { id: 5, name: "Velká cena Saúdské Arábie", circuit: "Jeddah", date: "20. dubna 2025", flag: "🇸🇦", completed: false },
+            { id: 6, name: "Velká cena Miami", circuit: "Miami", date: "4. května 2025", flag: "🇺🇸", completed: false },
+            { id: 7, name: "Velká cena Emilie-Romagne", circuit: "Imola", date: "18. května 2025", flag: "🇮🇹", completed: false },
+            { id: 8, name: "Velká cena Monaka", circuit: "Monte Carlo", date: "25. května 2025", flag: "🇲🇨", completed: false },
+            { id: 9, name: "Velká cena Španělska", circuit: "Barcelona", date: "1. června 2025", flag: "🇪🇸", completed: false },
+            { id: 10, name: "Velká cena Kanady", circuit: "Montreal", date: "15. června 2025", flag: "🇨🇦", completed: false },
+            { id: 11, name: "Velká cena Rakouska", circuit: "Red Bull Ring", date: "29. června 2025", flag: "🇦🇹", completed: false },
+            { id: 12, name: "Velká cena Velké Británie", circuit: "Silverstone", date: "6. července 2025", flag: "🇬🇧", completed: false },
+            { id: 13, name: "Velká cena Belgie", circuit: "Spa-Francorchamps", date: "27. července 2025", flag: "🇧🇪", completed: false },
+            { id: 14, name: "Velká cena Maďarska", circuit: "Hungaroring", date: "3. srpna 2025", flag: "🇭🇺", completed: false },
+            { id: 15, name: "Velká cena Nizozemska", circuit: "Zandvoort", date: "31. srpna 2025", flag: "🇳🇱", completed: false },
+            { id: 16, name: "Velká cena Itálie", circuit: "Monza", date: "7. září 2025", flag: "🇮🇹", completed: false },
+            { id: 17, name: "Velká cena Ázerbájdžánu", circuit: "Baku", date: "21. září 2025", flag: "🇦🇿", completed: false },
+            { id: 18, name: "Velká cena Singapuru", circuit: "Marina Bay", date: "5. října 2025", flag: "🇸🇬", completed: false },
+            { id: 19, name: "Velká cena USA", circuit: "Austin", date: "19. října 2025", flag: "🇺🇸", completed: false },
+            { id: 20, name: "Velká cena Mexika", circuit: "Mexico City", date: "26. října 2025", flag: "🇲🇽", completed: false },
+            { id: 21, name: "Velká cena Brazílie", circuit: "Interlagos", date: "9. listopadu 2025", flag: "🇧🇷", completed: false },
+            { id: 22, name: "Velká cena Las Vegas", circuit: "Las Vegas Strip", date: "22. listopadu 2025", flag: "🇺🇸", completed: false },
+            { id: 23, name: "Velká cena Kataru", circuit: "Lusail", date: "30. listopadu 2025", flag: "🇶🇦", completed: false },
+            { id: 24, name: "Velká cena Abú Zabí", circuit: "Yas Marina", date: "7. prosince 2025", flag: "🇦🇪", completed: false }
+        ];
+
+        function loadData() {
+            const saved = JSON.parse(localStorage.getItem('f1Data') || '{}');
+            if (saved.drivers) {
+                saved.drivers.forEach(savedDriver => {
+                    const driver = drivers.find(d => d.id === savedDriver.id);
+                    if (driver) driver.points = savedDriver.points;
+                });
+            }
+            if (saved.races) {
+                saved.races.forEach(savedRace => {
+                    const race = races.find(r => r.id === savedRace.id);
+                    if (race) race.completed = savedRace.completed;
+                });
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('f1Data', JSON.stringify({
+                drivers: drivers.map(d => ({ id: d.id, points: d.points })),
+                races: races.map(r => ({ id: r.id, completed: r.completed }))
+            }));
+        }
+
+        function updateStandings() {
+            const sorted = [...drivers].sort((a, b) => b.points - a.points);
+            const tbody = document.getElementById('standings-body');
+            tbody.innerHTML = '';
+            
+            sorted.forEach((driver, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td class="position">${index + 1}</td>
+                    <td>
+                        <div class="driver-info">
+                            <span class="driver-flag">${driver.flag}</span>
+                            <div>
+                                <div class="driver-name">${driver.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="team">${driver.team}</td>
+                    <td class="points">${driver.points}</td>
+                `;
+            });
+
+            updatePodium(sorted);
+        }
+
+        function updatePodium(sorted) {
+            const podium = document.getElementById('podium');
+            podium.innerHTML = '';
+            
+            for (let i = 0; i < 3 && i < sorted.length; i++) {
+                const driver = sorted[i];
+                const medals = ['🥇', '🥈', '🥉'];
+                podium.innerHTML += `
+                    <div class="podium-place place-${i + 1}">
+                        <div class="place-number">${medals[i]}</div>
+                        <div class="place-driver">${driver.name}</div>
+                        <div class="place-points">${driver.points} bodů</div>
+                    </div>
+                `;
+            }
+        }
+
+        function updateCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            
+            races.forEach(race => {
+                grid.innerHTML += `
+                    <div class="race-card">
+                        <div class="race-card-header">
+                            <span class="race-number">#${race.id}</span>
+                            <div class="race-flag">${race.flag}</div>
+                            <div class="race-name">${race.name}</div>
+                            <div class="race-circuit">${race.circuit}</div>
+                            <div class="race-date">📅 ${race.date}</div>
+                            <span class="race-status ${race.completed ? 'status-completed' : 'status-upcoming'}">
+                                ${race.completed ? '✅ Dokončeno' : '⏱️ Nadcházející'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateResultsForm() {
+            const select = document.getElementById('race-select');
+            select.innerHTML = '<option value="">Vyberte závod...</option>';
+            
+            races.forEach(race => {
+                select.innerHTML += `<option value="${race.id}">${race.name}</option>`;
+            });
+
+            const inputs = document.getElementById('position-inputs');
+            inputs.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const div = document.createElement('div');
+                div.className = 'position-input';
+                div.innerHTML = `
+                    <span class="position-label">P${i}</span>
+                    <select id="pos-${i}">
+                        <option value="">Vyberte jezdce...</option>
+                        ${drivers.map(d => `<option value="${d.id}">${d.name}</option>`).join('')}
+                    </select>
+                `;
+                inputs.appendChild(div);
+            }
+        }
+
+        function submitResults() {
+            const raceId = parseInt(document.getElementById('race-select').value);
+            if (!raceId) {
+                alert('Vyberte prosím závod!');
+                return;
+            }
+
+            const results = [];
+            for (let i = 1; i <= 10; i++) {
+                const driverId = parseInt(document.getElementById(`pos-${i}`).value);
+                if (driverId) {
+                    results.push(driverId);
+                }
+            }
+
+            if (results.length === 0) {
+                alert('Zadejte alespoň jednoho jezdce!');
+                return;
+            }
+
+            results.forEach((driverId, index) => {
+                const driver = drivers.find(d => d.id === driverId);
+                if (driver && index < pointsSystem.length) {
+                    driver.points += pointsSystem[index];
+                }
+            });
+
+            const race = races.find(r => r.id === raceId);
+            if (race) {
+                race.completed = true;
+            }
+
+            saveData();
+            updateStandings();
+            updateCalendar();
+            showTab('standings');
+            alert('✅ Výsledky byly úspěšně uloženy!');
+        }
+
+        function resetAllData() {
+            if (confirm('Opravdu chcete resetovat všechna data? Tuto akci nelze vrátit zpět!')) {
+                drivers.forEach(d => d.points = 0);
+                races.forEach(r => r.completed = false);
+                localStorage.removeItem('f1Data');
+                updateStandings();
+                updateCalendar();
+                updateResultsForm();
+                alert('✅ Data byla resetována!');
+            }
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.onclick.toString().includes(tabName)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        loadData();
+        updateStandings();
+        updateCalendar();
+        updateResultsForm();
+    </script>
+</body>
+</html>
+<h2 style="color:white; text-align:center;">🏁 Výsledky kvalifikace 2025</h2>
+<button onclick="loadQualifying()">Načíst kvalifikaci</button>
+
+<table id="qualifying-table">
+  <thead>
+    <tr>
+      <th>Poř.</th>
+      <th>Č.</th>
+      <th>Jezdec</th>
+      <th>Tým</th>
+      <th>Q1</th>
+      <th>Q2</th>
+      <th>Q3</th>
+      <th>Startovní pozice</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<h2 style="color:white; text-align:center;">🏁 Výsledky posledního závodu – Katar 2025</h2>
+<button onclick="loadRaceResults()">Zobrazit výsledky</button>
+
+<table id="race-results">
+  <thead>
+    <tr>
+      <th>Poř.</th>
+      <th>Č.</th>
+      <th>Jezdec</th>
+      <th>Tým</th>
+      <th>Kol</th>
+      <th>Čas / Odstoupení</th>
+      <th>Start</th>
+      <th>Body</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
